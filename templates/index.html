@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>NetOps Console</title>
+  <style>
+    :root {
+      --pink: #DF939D;
+      --blush: #E2B9BC;
+      --cream: #F5EDD9;
+      --olive: #999669;
+      --brown: #736050;
+      --ink: #3b2f27;
+      --dark: #2a221d;
+    }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; height: 100%; }
+    body {
+      font-family: "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background: var(--cream);
+      color: var(--ink);
+      display: flex;
+      min-height: 100vh;
+    }
+
+    /* ---------- Sidebar ---------- */
+    .sidebar {
+      width: 270px;
+      flex-shrink: 0;
+      background: var(--brown);
+      color: var(--cream);
+      padding: 28px 20px;
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      overflow-y: auto;
+    }
+    .brand {
+      font-size: 1.35rem;
+      font-weight: 800;
+      letter-spacing: .5px;
+      margin-bottom: 4px;
+    }
+    .brand span { color: var(--pink); }
+    .tag { font-size: .8rem; color: var(--blush); margin-bottom: 26px; }
+
+    .device {
+      background: rgba(245, 237, 217, .12);
+      border-left: 4px solid var(--pink);
+      border-radius: 6px;
+      padding: 12px 14px;
+      margin-bottom: 26px;
+    }
+    .device small { display: block; color: var(--blush); font-size: .72rem; text-transform: uppercase; letter-spacing: 1px; }
+    .device code { font-family: Consolas, "Courier New", monospace; font-size: .95rem; }
+
+    .nav-title {
+      font-size: .72rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--blush);
+      margin-bottom: 8px;
+    }
+    .nav a {
+      display: block;
+      color: var(--cream);
+      text-decoration: none;
+      padding: 9px 12px;
+      border-radius: 6px;
+      font-size: .9rem;
+      margin-bottom: 4px;
+      font-family: Consolas, "Courier New", monospace;
+    }
+    .nav a:hover { background: rgba(245, 237, 217, .18); }
+    .nav .empty { color: var(--blush); font-size: .85rem; padding: 4px 12px; }
+
+    /* ---------- Main ---------- */
+    .main { flex: 1; min-width: 0; padding: 32px 36px; }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+      margin-bottom: 26px;
+    }
+    .topbar h1 { margin: 0; font-size: 1.8rem; color: var(--brown); }
+    .topbar p { margin: 2px 0 0; color: var(--olive); font-weight: 600; }
+
+    button.run {
+      background: var(--pink);
+      color: var(--ink);
+      border: 0;
+      border-radius: 999px;
+      padding: 12px 28px;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 3px 8px rgba(223, 147, 157, .5);
+      transition: background .15s, transform .05s;
+    }
+    button.run:hover { background: #d4818c; }
+    button.run:active { transform: translateY(1px); }
+    button.run:disabled { background: var(--blush); box-shadow: none; cursor: wait; }
+
+    /* ---------- Stat cards ---------- */
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+      gap: 14px;
+      margin-bottom: 28px;
+    }
+    .stat {
+      background: #fffaf0;
+      border: 1px solid var(--blush);
+      border-radius: 12px;
+      padding: 14px 16px;
+    }
+    .stat small { color: var(--brown); font-size: .75rem; text-transform: uppercase; letter-spacing: 1px; }
+    .stat strong { display: block; margin-top: 6px; font-size: 1.15rem; word-break: break-all; }
+    .ok { color: #5f6b2e; }
+    .fail { color: #b0384a; }
+
+    .alert {
+      margin-bottom: 24px;
+      padding: 14px 18px;
+      border-radius: 10px;
+      background: #f8e3e5;
+      border: 1px solid var(--pink);
+      color: #6b2c35;
+    }
+
+    /* ---------- Result panels ---------- */
+    .panel {
+      background: #fffaf0;
+      border: 1px solid var(--blush);
+      border-radius: 12px;
+      margin-bottom: 16px;
+      overflow: hidden;
+      scroll-margin-top: 20px;
+    }
+    .panel summary {
+      list-style: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 14px 18px;
+    }
+    .panel summary::-webkit-details-marker { display: none; }
+    .badge {
+      width: 30px; height: 30px;
+      border-radius: 50%;
+      background: var(--olive);
+      color: #fff;
+      display: grid;
+      place-items: center;
+      font-weight: 700;
+      font-size: .9rem;
+      flex-shrink: 0;
+    }
+    .cmd { font-family: Consolas, "Courier New", monospace; font-weight: 700; color: var(--brown); }
+    .grow { flex: 1; }
+    .chev { color: var(--pink); transition: transform .15s; }
+    .panel[open] .chev { transform: rotate(90deg); }
+    .copy {
+      background: transparent;
+      border: 1px solid var(--blush);
+      color: var(--brown);
+      border-radius: 6px;
+      padding: 4px 12px;
+      font-size: .78rem;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .copy:hover { background: var(--blush); }
+
+    pre {
+      margin: 0;
+      padding: 18px 20px;
+      background: var(--dark);
+      color: var(--cream);
+      font-family: Consolas, "Courier New", monospace;
+      font-size: .84rem;
+      line-height: 1.5;
+      overflow: auto;
+      max-height: 520px;
+    }
+
+    .placeholder {
+      text-align: center;
+      padding: 50px 20px;
+      border: 2px dashed var(--blush);
+      border-radius: 14px;
+      color: var(--brown);
+    }
+
+    /* ---------- Mobile ---------- */
+    @media (max-width: 800px) {
+      body { flex-direction: column; }
+      .sidebar { width: 100%; height: auto; position: static; padding: 20px; }
+      .main { padding: 20px 16px; }
+    }
+  </style>
+</head>
+<body>
+
+  <aside class="sidebar">
+    <div class="brand">NetOps<span>.</span>Console</div>
+    <div class="tag">Router automation dashboard</div>
+
+    <div class="device">
+      <small>Target device</small>
+      <code>{{ target }}</code>
+      <small style="margin-top:6px;">Telnet</small>
+    </div>
+
+    <div class="nav-title">Command outputs</div>
+    <nav class="nav">
+      {% if results %}
+        {% for cmd in results %}
+          <a href="#cmd-{{ loop.index }}">{{ loop.index }}. {{ cmd }}</a>
+        {% endfor %}
+      {% else %}
+        <div class="empty">Run diagnostics to see results.</div>
+      {% endif %}
+    </nav>
+  </aside>
+
+  <main class="main">
+    <form method="POST" id="diag-form" class="topbar">
+      <div>
+        <h1>Diagnostics</h1>
+        <p id="status">
+          {% if error %}Run failed{% elif results %}Run completed{% else %}Ready to run{% endif %}
+        </p>
+      </div>
+      <button type="submit" class="run" id="run-btn">Run Diagnostics</button>
+    </form>
+
+    <section class="stats">
+      <div class="stat">
+        <small>Target</small>
+        <strong>{{ target }}</strong>
+      </div>
+      <div class="stat">
+        <small>Protocol</small>
+        <strong>Telnet</strong>
+      </div>
+      <div class="stat">
+        <small>Commands</small>
+        <strong>{% if results %}{{ results|length }} completed{% else %}-{% endif %}</strong>
+      </div>
+      <div class="stat">
+        <small>Status</small>
+        <strong class="{% if error %}fail{% elif results %}ok{% endif %}">
+          {% if error %}Failed{% elif results %}Success{% else %}Idle{% endif %}
+        </strong>
+      </div>
+    </section>
+
+    {% if error %}
+      <div class="alert"><strong>Error:</strong> {{ error }}</div>
+    {% endif %}
+
+    {% if results %}
+      {% for cmd, output in results.items() %}
+        <details class="panel" id="cmd-{{ loop.index }}" {% if loop.first %}open{% endif %}>
+          <summary>
+            <span class="badge">{{ loop.index }}</span>
+            <span class="cmd">{{ cmd }}</span>
+            <span class="grow"></span>
+            <button type="button" class="copy" onclick="copyOutput(event, 'out-{{ loop.index }}')">Copy</button>
+            <span class="chev">&#9656;</span>
+          </summary>
+          <pre id="out-{{ loop.index }}">{{ output }}</pre>
+        </details>
+      {% endfor %}
+    {% elif not error %}
+      <div class="placeholder">
+        <strong>No results yet</strong><br>
+        Click <em>Run Diagnostics</em> to connect to the router and collect output.
+      </div>
+    {% endif %}
+  </main>
+
+  <script>
+    const form = document.getElementById('diag-form');
+    const btn = document.getElementById('run-btn');
+    const status = document.getElementById('status');
+
+    form.addEventListener('submit', () => {
+      btn.disabled = true;
+      btn.textContent = 'Running...';
+      status.textContent = 'Connecting to router...';
+    });
+
+    function copyOutput(event, id) {
+      event.preventDefault();
+      event.stopPropagation();
+      const text = document.getElementById(id).innerText;
+      const button = event.target;
+      navigator.clipboard.writeText(text).then(() => {
+        button.textContent = 'Copied!';
+        setTimeout(() => button.textContent = 'Copy', 1200);
+      });
+    }
+  </script>
+</body>
+</html>
