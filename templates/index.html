@@ -15,68 +15,125 @@
       --dark: #2a221d;
     }
     * { box-sizing: border-box; }
-    html, body { margin: 0; height: 100%; }
+    html, body { margin: 0; min-height: 100%; }
     body {
       font-family: "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
       background: var(--cream);
       color: var(--ink);
       display: flex;
+      align-items: flex-start;
+      gap: 24px;
+      padding: 20px;
       min-height: 100vh;
     }
 
-    /* ---------- Sidebar ---------- */
+    /* ---------- Floating sidebar ---------- */
     .sidebar {
-      width: 270px;
+      width: 280px;
       flex-shrink: 0;
-      background: var(--brown);
-      color: var(--cream);
-      padding: 28px 20px;
       position: sticky;
-      top: 0;
-      height: 100vh;
+      top: 20px;
+      max-height: calc(100vh - 40px);
       overflow-y: auto;
+      background: #fffaf0;
+      border: 1px solid var(--blush);
+      border-radius: 24px;
+      box-shadow: 0 10px 30px rgba(115, 96, 80, .15);
+      overflow-x: hidden;
     }
-    .brand {
-      font-size: 1.35rem;
-      font-weight: 800;
-      letter-spacing: .5px;
-      margin-bottom: 4px;
+    .side-head {
+      background: linear-gradient(135deg, var(--pink), var(--blush));
+      padding: 24px 22px 22px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
     }
-    .brand span { color: var(--pink); }
-    .tag { font-size: .8rem; color: var(--blush); margin-bottom: 26px; }
+    .logo {
+      width: 46px; height: 46px;
+      border-radius: 14px;
+      background: #fffaf0;
+      color: var(--brown);
+      display: grid;
+      place-items: center;
+      font-weight: 900;
+      font-size: 1.3rem;
+      box-shadow: 0 3px 8px rgba(115, 96, 80, .25);
+    }
+    .side-head h2 { margin: 0; font-size: 1.1rem; color: var(--ink); }
+    .side-head p { margin: 2px 0 0; font-size: .78rem; color: var(--brown); }
+
+    .side-body { padding: 20px 18px 22px; }
 
     .device {
-      background: rgba(245, 237, 217, .12);
-      border-left: 4px solid var(--pink);
-      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: var(--cream);
+      border: 1px dashed var(--olive);
+      border-radius: 14px;
       padding: 12px 14px;
-      margin-bottom: 26px;
+      margin-bottom: 22px;
     }
-    .device small { display: block; color: var(--blush); font-size: .72rem; text-transform: uppercase; letter-spacing: 1px; }
-    .device code { font-family: Consolas, "Courier New", monospace; font-size: .95rem; }
+    .dot {
+      width: 12px; height: 12px;
+      border-radius: 50%;
+      background: var(--olive);
+      flex-shrink: 0;
+    }
+    .dot.live { background: #7d9a3a; box-shadow: 0 0 0 4px rgba(125, 154, 58, .25); }
+    .dot.bad { background: #c24a5c; box-shadow: 0 0 0 4px rgba(194, 74, 92, .25); }
+    .device small { display: block; font-size: .7rem; color: var(--brown); text-transform: uppercase; letter-spacing: 1px; }
+    .device code { font-family: Consolas, "Courier New", monospace; font-size: .92rem; color: var(--ink); font-weight: 700; }
 
     .nav-title {
-      font-size: .72rem;
+      font-size: .7rem;
       text-transform: uppercase;
-      letter-spacing: 1px;
-      color: var(--blush);
-      margin-bottom: 8px;
+      letter-spacing: 1.2px;
+      color: var(--brown);
+      margin: 0 6px 10px;
     }
     .nav a {
-      display: block;
-      color: var(--cream);
+      display: flex;
+      align-items: center;
+      gap: 10px;
       text-decoration: none;
-      padding: 9px 12px;
-      border-radius: 6px;
-      font-size: .9rem;
-      margin-bottom: 4px;
+      color: var(--ink);
+      padding: 9px 10px;
+      border-radius: 999px;
+      font-size: .85rem;
       font-family: Consolas, "Courier New", monospace;
+      margin-bottom: 6px;
+      border: 1px solid transparent;
+      transition: background .15s, border-color .15s;
     }
-    .nav a:hover { background: rgba(245, 237, 217, .18); }
-    .nav .empty { color: var(--blush); font-size: .85rem; padding: 4px 12px; }
+    .nav a .n {
+      width: 24px; height: 24px;
+      border-radius: 50%;
+      background: var(--blush);
+      color: var(--brown);
+      display: grid;
+      place-items: center;
+      font-size: .75rem;
+      font-weight: 700;
+      font-family: "Segoe UI", sans-serif;
+      flex-shrink: 0;
+    }
+    .nav a:hover { background: var(--cream); }
+    .nav a.active { background: var(--cream); border-color: var(--pink); }
+    .nav a.active .n { background: var(--pink); color: var(--ink); }
+    .nav .empty { color: var(--brown); font-size: .85rem; padding: 4px 8px; opacity: .8; }
+
+    .side-foot {
+      border-top: 1px solid var(--blush);
+      padding: 14px 22px;
+      font-size: .75rem;
+      color: var(--brown);
+      display: flex;
+      justify-content: space-between;
+    }
 
     /* ---------- Main ---------- */
-    .main { flex: 1; min-width: 0; padding: 32px 36px; }
+    .main { flex: 1; min-width: 0; padding: 12px 8px 20px; }
 
     .topbar {
       display: flex;
@@ -105,7 +162,6 @@
     button.run:active { transform: translateY(1px); }
     button.run:disabled { background: var(--blush); box-shadow: none; cursor: wait; }
 
-    /* ---------- Stat cards ---------- */
     .stats {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
@@ -115,7 +171,7 @@
     .stat {
       background: #fffaf0;
       border: 1px solid var(--blush);
-      border-radius: 12px;
+      border-radius: 14px;
       padding: 14px 16px;
     }
     .stat small { color: var(--brown); font-size: .75rem; text-transform: uppercase; letter-spacing: 1px; }
@@ -126,17 +182,16 @@
     .alert {
       margin-bottom: 24px;
       padding: 14px 18px;
-      border-radius: 10px;
+      border-radius: 12px;
       background: #f8e3e5;
       border: 1px solid var(--pink);
       color: #6b2c35;
     }
 
-    /* ---------- Result panels ---------- */
     .panel {
       background: #fffaf0;
       border: 1px solid var(--blush);
-      border-radius: 12px;
+      border-radius: 14px;
       margin-bottom: 16px;
       overflow: hidden;
       scroll-margin-top: 20px;
@@ -193,40 +248,55 @@
       text-align: center;
       padding: 50px 20px;
       border: 2px dashed var(--blush);
-      border-radius: 14px;
+      border-radius: 16px;
       color: var(--brown);
     }
 
-    /* ---------- Mobile ---------- */
     @media (max-width: 800px) {
-      body { flex-direction: column; }
-      .sidebar { width: 100%; height: auto; position: static; padding: 20px; }
-      .main { padding: 20px 16px; }
+      body { flex-direction: column; padding: 12px; }
+      .sidebar { width: 100%; position: static; max-height: none; }
+      .main { padding: 8px 4px 20px; width: 100%; }
     }
   </style>
 </head>
 <body>
 
   <aside class="sidebar">
-    <div class="brand">NetOps<span>.</span>Console</div>
-    <div class="tag">Router automation dashboard</div>
-
-    <div class="device">
-      <small>Target device</small>
-      <code>{{ target }}</code>
-      <small style="margin-top:6px;">Telnet</small>
+    <div class="side-head">
+      <div class="logo">N</div>
+      <div>
+        <h2>NetOps Console</h2>
+        <p>Router automation</p>
+      </div>
     </div>
 
-    <div class="nav-title">Command outputs</div>
-    <nav class="nav">
-      {% if results %}
-        {% for cmd in results %}
-          <a href="#cmd-{{ loop.index }}">{{ loop.index }}. {{ cmd }}</a>
-        {% endfor %}
-      {% else %}
-        <div class="empty">Run diagnostics to see results.</div>
-      {% endif %}
-    </nav>
+    <div class="side-body">
+      <div class="device">
+        <span class="dot {% if error %}bad{% elif results %}live{% endif %}"></span>
+        <div>
+          <small>Target device</small>
+          <code>{{ target }}</code>
+        </div>
+      </div>
+
+      <div class="nav-title">Command outputs</div>
+      <nav class="nav" id="nav">
+        {% if results %}
+          {% for cmd in results %}
+            <a href="#cmd-{{ loop.index }}" data-target="cmd-{{ loop.index }}">
+              <span class="n">{{ loop.index }}</span>{{ cmd }}
+            </a>
+          {% endfor %}
+        {% else %}
+          <div class="empty">Run diagnostics to see results.</div>
+        {% endif %}
+      </nav>
+    </div>
+
+    <div class="side-foot">
+      <span>Telnet</span>
+      <span>Netmiko</span>
+    </div>
   </aside>
 
   <main class="main">
@@ -307,6 +377,24 @@
         setTimeout(() => button.textContent = 'Copy', 1200);
       });
     }
+
+    // Highlight the sidebar link for the panel currently in view
+    const links = document.querySelectorAll('#nav a');
+    const panels = document.querySelectorAll('.panel');
+    function setActive(id) {
+      links.forEach(a => a.classList.toggle('active', a.dataset.target === id));
+    }
+    if (links.length && 'IntersectionObserver' in window) {
+      const obs = new IntersectionObserver(entries => {
+        entries.forEach(e => { if (e.isIntersecting) setActive(e.target.id); });
+      }, { rootMargin: '-20% 0px -70% 0px' });
+      panels.forEach(p => obs.observe(p));
+      setActive('cmd-1');
+    }
+    links.forEach(a => a.addEventListener('click', () => {
+      const p = document.getElementById(a.dataset.target);
+      if (p) p.open = true;
+    }));
   </script>
 </body>
 </html>
